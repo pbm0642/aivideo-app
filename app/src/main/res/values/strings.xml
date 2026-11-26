@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">监控预览</string>
-    <string name="config_title">连接监控服务器</string>
-    <string name="config_subtitle">输入 Docker 部署的 Web / H5 访问地址即可使用</string>
-    <string name="url_hint">例如 http://192.168.10.100:8080</string>
-    <string name="btn_connect">进入监控</string>
-    <string name="opt_keep_screen_on">预览时保持屏幕常亮</string>
-    <string name="opt_ignore_ssl">允许自签名 HTTPS 证书</string>
-    <string name="recent_servers">历史地址（点击直接连接）</string>
-    <string name="no_recent_servers">暂无历史记录</string>
-    <string name="err_empty_url">请输入有效的服务器地址</string>
+    <string name="app_name">慧眼监控</string>
+    <string name="login_brand">慧眼监控</string>
+    <string name="hint_server">服务器地址 (如 192.168.10.100:8080)</string>
+    <string name="hint_username">账号</string>
+    <string name="hint_password">密码</string>
+    <string name="label_https">HTTPS</string>
+    <string name="label_remember">记住我的登录状态</string>
+    <string name="btn_login">登录</string>
     <string name="press_back_again">再按一次退出应用</string>
 </resources>

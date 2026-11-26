@@ -45,7 +45,6 @@ class WebViewerActivity : AppCompatActivity() {
     private var customViewCallback: WebChromeClient.CustomViewCallback? = null
     private var filePathCallback: ValueCallback<Array<Uri>>? = null
     private var isLandscape = false
-    private var lastBackPressMs = 0L
 
     private val fileChooserLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -60,7 +59,7 @@ class WebViewerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (ServerPrefs.isKeepScreenOn(this)) {
+        if (SessionPrefs.isKeepScreenOn(this)) {
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
 
@@ -73,12 +72,13 @@ class WebViewerActivity : AppCompatActivity() {
         btnRotate = findViewById(R.id.btnRotate)
         val btnRefresh = findViewById<TextView>(R.id.btnRefresh)
         val btnSwitchServer = findViewById<TextView>(R.id.btnSwitchServer)
+        btnSwitchServer.text = "返回监控"
 
         val targetUrl = intent.getStringExtra(EXTRA_URL)
-            ?: ServerPrefs.getCurrentUrl(this)
+            ?: SessionPrefs.getCurrentAccount(this)?.normalizedBaseUrl().orEmpty()
 
         if (targetUrl.isBlank()) {
-            goToServerConfig()
+            finish()
             return
         }
 
@@ -135,7 +135,7 @@ class WebViewerActivity : AppCompatActivity() {
                 handler: SslErrorHandler?,
                 error: SslError?
             ) {
-                if (ServerPrefs.isIgnoreSsl(this@WebViewerActivity)) {
+                if (SessionPrefs.isIgnoreSsl(this@WebViewerActivity)) {
                     handler?.proceed()
                 } else {
                     handler?.cancel()
@@ -217,13 +217,11 @@ class WebViewerActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     Toast.makeText(this, "下载失败: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(this, "暂不支持该下载链接格式", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun setupControls(btnRefresh: TextView, btnSwitchServer: TextView) {
+    private fun setupControls(btnRefresh: TextView, btnBack: TextView) {
         btnRotate.setOnClickListener {
             isLandscape = !isLandscape
             if (isLandscape) {
@@ -237,13 +235,8 @@ class WebViewerActivity : AppCompatActivity() {
             }
         }
 
-        btnRefresh.setOnClickListener {
-            webView.reload()
-        }
-
-        btnSwitchServer.setOnClickListener {
-            goToServerConfig()
-        }
+        btnRefresh.setOnClickListener { webView.reload() }
+        btnBack.setOnClickListener { finish() }
     }
 
     private fun setupBackNavigation() {
@@ -257,17 +250,7 @@ class WebViewerActivity : AppCompatActivity() {
                     webView.goBack()
                     return
                 }
-                val now = System.currentTimeMillis()
-                if (now - lastBackPressMs < 2000) {
-                    finish()
-                } else {
-                    lastBackPressMs = now
-                    Toast.makeText(
-                        this@WebViewerActivity,
-                        R.string.press_back_again,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                finish()
             }
         })
     }
@@ -296,14 +279,6 @@ class WebViewerActivity : AppCompatActivity() {
         } else {
             controller.show(WindowInsetsCompat.Type.systemBars())
         }
-    }
-
-    private fun goToServerConfig() {
-        val intent = Intent(this, ServerConfigActivity::class.java).apply {
-            putExtra(ServerConfigActivity.EXTRA_FORCE_CONFIG, true)
-        }
-        startActivity(intent)
-        finish()
     }
 
     override fun onPause() {
