@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cellRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:orientation="vertical"
+    android:padding="1dp">
+
+    <!-- 信息栏（摄像机名称，可在右上角菜单控制显隐） -->
+    <TextView
+        android:id="@+id/tvCameraName"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:background="#23272D"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="摄像机"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#000000">
+
+        <androidx.media3.ui.PlayerView
+            android:id="@+id/playerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:shutter_background_color="#000000"
+            app:use_controller="false" />
+
+        <TextView
+            android:id="@+id/tvCellStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="连接中..."
+            android:textColor="#8B95A1"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tvCellBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_margin="6dp"
+            android:background="#88000000"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp"
+            android:text="LIVE"
+            android:textColor="#60A5FA"
+            android:textSize="10sp"
+            android:visibility="gone" />
+    </FrameLayout>
+
+</LinearLayout>
